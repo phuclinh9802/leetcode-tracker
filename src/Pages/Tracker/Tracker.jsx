@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -11,7 +11,11 @@ import Paper from "@mui/material/Paper";
 
 import "./Tracker.css";
 import AddNewItem from "../../Components/AddNewItem/AddNewItem";
-import { fetchLeetcodeItems } from "../../redux/actions/trackerActions";
+import {
+  fetchLeetcodeItems,
+  deleteLeetcodeItem,
+  resetLeetcodeItems,
+} from "../../redux/actions/trackerActions";
 import { connect } from "react-redux";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -38,25 +42,24 @@ const styles = {
   padding: "50px",
 };
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
-const Tracker = ({ items, fetchLeetcodeItems }) => {
+const Tracker = ({
+  items,
+  fetchLeetcodeItems,
+  deleteLeetcodeItem,
+  resetLeetcodeItems,
+}) => {
   const [currentItems, setCurrentItems] = React.useState([]);
 
   React.useEffect(() => {
     setCurrentItems(localStorage.getItem("items"));
-    // fetchLeetcodeItems(items);
-  }, [currentItems, items]);
+    fetchLeetcodeItems(items);
+  }, [currentItems, items, fetchLeetcodeItems]);
+
+  console.log(items);
+
+  const handleDelete = (question) => {
+    deleteLeetcodeItem(question);
+  };
 
   return (
     <Box sx={styles}>
@@ -68,9 +71,12 @@ const Tracker = ({ items, fetchLeetcodeItems }) => {
             <TableHead>
               <TableRow>
                 <StyledTableCell>Question</StyledTableCell>
-                <StyledTableCell align="right">Level</StyledTableCell>
-                <StyledTableCell align="right">Type</StyledTableCell>
-                <StyledTableCell align="right">Guided Solution</StyledTableCell>
+                <StyledTableCell align="center">Level</StyledTableCell>
+                <StyledTableCell align="center">Type</StyledTableCell>
+                <StyledTableCell align="center">
+                  Guided Solution
+                </StyledTableCell>
+                <StyledTableCell align="center">Actions</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -89,13 +95,23 @@ const Tracker = ({ items, fetchLeetcodeItems }) => {
                             ? "orange"
                             : "red",
                       }}
-                      align="right"
+                      align="center"
                     >
                       {row.level}
                     </StyledTableCell>
-                    <StyledTableCell align="right">{row.type}</StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align="center">{row.type}</StyledTableCell>
+                    <StyledTableCell align="center">
                       {row.guidedSolution}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Button>View</Button>
+                      <Button>Edit</Button>
+                      <Button
+                        onClick={() => handleDelete(row.question)}
+                        sx={{ color: "red" }}
+                      >
+                        Delete
+                      </Button>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -111,4 +127,8 @@ const mapStateToProps = (state) => ({
   items: state.tracker.items,
 });
 
-export default connect(mapStateToProps, { fetchLeetcodeItems })(Tracker);
+export default connect(mapStateToProps, {
+  fetchLeetcodeItems,
+  deleteLeetcodeItem,
+  resetLeetcodeItems,
+})(Tracker);

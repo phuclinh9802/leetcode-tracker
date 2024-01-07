@@ -1,6 +1,8 @@
 import {
   FETCH_LEETCODE_ITEMS,
   ADD_LEETCODE_ITEM,
+  DELETE_LEETCODE_ITEM,
+  RESET_LEETCODE_ITEMS,
 } from "../actions/trackerActions";
 
 const savedState = localStorage.getItem("trackerState");
@@ -24,6 +26,25 @@ export const trackerReducer = (state = initialState, action) => {
       // Save updated state to local storage
       localStorage.setItem("trackerState", JSON.stringify(newState));
       return newState;
+
+    case DELETE_LEETCODE_ITEM:
+      console.log("action.payload", action.payload);
+      const newItems = state.items.filter(
+        (item) => item.question !== action.payload
+      );
+      const deletedState = {
+        ...state,
+        items: newItems,
+      };
+      localStorage.setItem("trackerState", JSON.stringify(deletedState));
+      return deletedState;
+
+    case RESET_LEETCODE_ITEMS:
+      localStorage.removeItem("trackerState");
+      return {
+        ...state,
+        items: [],
+      };
     default:
       return state;
   }

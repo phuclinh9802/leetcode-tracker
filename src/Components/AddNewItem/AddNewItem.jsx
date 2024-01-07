@@ -13,7 +13,10 @@ import {
   TextField,
 } from "@mui/material";
 import { connect } from "react-redux";
-import { addLeetcodeItems } from "../../redux/actions/trackerActions";
+import {
+  addLeetcodeItems,
+  resetLeetcodeItems,
+} from "../../redux/actions/trackerActions";
 
 const style = {
   position: "absolute",
@@ -27,7 +30,7 @@ const style = {
   p: 4,
 };
 
-const buttonStyle = {
+const createButtonStyle = {
   bgcolor: "#149714",
   padding: "5px 20px",
   margin: "10px",
@@ -39,7 +42,19 @@ const buttonStyle = {
   },
 };
 
-const AddNewItem = ({ items, addLeetcodeItems }) => {
+const resetButtonStyle = {
+  bgcolor: "#EA3232",
+  padding: "5px 20px",
+  margin: "10px",
+  display: "flex",
+  justifyContent: "flex-end",
+  color: "white",
+  "&:hover": {
+    bgcolor: "#BB2828",
+  },
+};
+
+const AddNewItem = ({ items, addLeetcodeItems, resetLeetcodeItems }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -84,9 +99,18 @@ const AddNewItem = ({ items, addLeetcodeItems }) => {
 
   return (
     <Box>
-      <Button sx={buttonStyle} className="create-button" onClick={handleOpen}>
-        Create
-      </Button>
+      <Box sx={{ display: "flex" }}>
+        <Button
+          sx={createButtonStyle}
+          className="create-button"
+          onClick={handleOpen}
+        >
+          Create
+        </Button>
+        <Button onClick={() => resetLeetcodeItems()} sx={resetButtonStyle}>
+          Clear
+        </Button>
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}
@@ -168,4 +192,7 @@ const mapStateToProps = (state) => ({
   items: state.tracker.items,
 });
 
-export default connect(mapStateToProps, { addLeetcodeItems })(AddNewItem);
+export default connect(mapStateToProps, {
+  addLeetcodeItems,
+  resetLeetcodeItems,
+})(AddNewItem);
