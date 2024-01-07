@@ -29,6 +29,9 @@ const Landing = () => {
               color: "#fff",
               padding: "5px 20px",
               textTransform: "capitalize",
+              "&:hover": {
+                backgroundColor: "#555",
+              },
             }}
           >
             Try Now!
