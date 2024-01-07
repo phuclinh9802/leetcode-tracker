@@ -1,4 +1,4 @@
-import { Box, List, ListItem } from "@mui/material";
+import { Box } from "@mui/material";
 import { Link } from "react-router-dom";
 import navbar from "../../data/navbar";
 
@@ -16,7 +16,7 @@ const Navbar = () => {
       <ul>
         {navbar.map((item) => (
           <li>
-            <Link to={`/${item}`}>{item}</Link>
+            <Link to={`/${item.toLocaleLowerCase()}`}>{item}</Link>
           </li>
         ))}
       </ul>
