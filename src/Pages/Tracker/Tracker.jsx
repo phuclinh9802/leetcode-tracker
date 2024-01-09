@@ -17,6 +17,7 @@ import {
   resetLeetcodeItems,
 } from "../../redux/actions/trackerActions";
 import { connect } from "react-redux";
+import HeatMap from "../../Components/HeatMap/HeatMap";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,18 +45,15 @@ const styles = {
 
 const Tracker = ({
   items,
+  heatMap,
   fetchLeetcodeItems,
   deleteLeetcodeItem,
   resetLeetcodeItems,
 }) => {
   const [currentItems, setCurrentItems] = React.useState([]);
 
-  React.useEffect(() => {
-    setCurrentItems(localStorage.getItem("items"));
-    fetchLeetcodeItems(items);
-  }, [currentItems, items, fetchLeetcodeItems]);
-
-  console.log(items);
+  console.log(items.items);
+  console.log(localStorage.getItem("trackerState"));
 
   const handleDelete = (question) => {
     deleteLeetcodeItem(question);
@@ -63,7 +61,9 @@ const Tracker = ({
 
   return (
     <Box sx={styles}>
-      <div className="tracker-performance"></div>
+      <div className="tracker-performance">
+        <HeatMap heatMap={heatMap} />
+      </div>
       <div className="tracker-table-section">
         <AddNewItem />
         <TableContainer component={Paper}>
@@ -76,13 +76,14 @@ const Tracker = ({
                 <StyledTableCell align="center">
                   Guided Solution
                 </StyledTableCell>
+                <StyledTableCell align="center">Date</StyledTableCell>
                 <StyledTableCell align="center">Actions</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {items &&
-                items.map((row) => (
-                  <StyledTableRow key={row.question}>
+                items.map((row, index) => (
+                  <StyledTableRow key={index}>
                     <StyledTableCell component="th" scope="row">
                       {row.question}
                     </StyledTableCell>
@@ -102,6 +103,9 @@ const Tracker = ({
                     <StyledTableCell align="center">{row.type}</StyledTableCell>
                     <StyledTableCell align="center">
                       {row.guidedSolution}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.currentDate}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <Button>View</Button>
@@ -125,6 +129,7 @@ const Tracker = ({
 
 const mapStateToProps = (state) => ({
   items: state.tracker.items,
+  heatMap: state.tracker.heatMap,
 });
 
 export default connect(mapStateToProps, {

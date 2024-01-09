@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import {
   addLeetcodeItems,
   resetLeetcodeItems,
+  setHeatMap,
 } from "../../redux/actions/trackerActions";
 
 const style = {
@@ -54,7 +55,13 @@ const resetButtonStyle = {
   },
 };
 
-const AddNewItem = ({ items, addLeetcodeItems, resetLeetcodeItems }) => {
+const AddNewItem = ({
+  heatMap,
+  items,
+  addLeetcodeItems,
+  resetLeetcodeItems,
+  setHeatMap,
+}) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -64,6 +71,7 @@ const AddNewItem = ({ items, addLeetcodeItems, resetLeetcodeItems }) => {
     level: "",
     type: "",
     guidedSolution: "",
+    currentDate: new Date(Date.now()).toISOString().slice(0, 10),
   });
 
   const handleInputChange = (e) => {
@@ -81,17 +89,19 @@ const AddNewItem = ({ items, addLeetcodeItems, resetLeetcodeItems }) => {
       [name]: checked ? "Add guided solution here..." : "",
     });
   };
-
   const handleSubmit = (e) => {
+    console.log(formData);
     e.preventDefault();
     // Perform actions with form data, e.g., submit to a backend, etc.
     addLeetcodeItems(formData);
+    setHeatMap({ date: formData.currentDate });
     // Reset form fields after submission
     setFormData({
       question: "",
       level: "",
       type: "",
       guidedSolution: "",
+      currentDate: new Date(Date.now()).toISOString().slice(0, 10),
     });
     setOpen(false);
     localStorage.setItem("items", items);
@@ -190,9 +200,11 @@ const AddNewItem = ({ items, addLeetcodeItems, resetLeetcodeItems }) => {
 
 const mapStateToProps = (state) => ({
   items: state.tracker.items,
+  heatMap: state.tracker.heatMap,
 });
 
 export default connect(mapStateToProps, {
   addLeetcodeItems,
   resetLeetcodeItems,
+  setHeatMap,
 })(AddNewItem);
